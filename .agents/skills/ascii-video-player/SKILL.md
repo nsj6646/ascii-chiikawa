@@ -19,7 +19,7 @@ Build a format-agnostic TrueColor ASCII terminal player and glowing HD ASCII GIF
    - **Deliverables**: live terminal player (`ascii_player.py`), original GIF, and/or glowing colored ASCII GIF.
 2. Verify dependencies in one command:
    - `ffmpeg` and `ffprobe` (and `yt-dlp` when sourcing from YouTube). If missing on macOS, install via Homebrew (`yes | brew install yt-dlp ffmpeg` to avoid interactive `[y/n]` stalls).
-   - A Python interpreter with `numpy` and `PIL` (`Pillow`). On macOS, Homebrew `python3` in `/opt/homebrew/bin` often lacks `numpy`/`PIL` while `/usr/bin/python3` has them; select the interpreter that passes `python -c "import numpy, PIL"` and prepend `/opt/homebrew/bin` to `PATH` for `ffmpeg`/`ffprobe`.
+   - A Python interpreter with `numpy` and `PIL` (`Pillow`). On macOS, Homebrew `python3` in `/opt/homebrew/bin` often lacks `numpy`/`PIL` while `/usr/bin/python3` has them; select the interpreter that passes `python -c "import numpy, PIL"` (install via `<PYTHON> -m pip install numpy pillow` if none has them) and prepend `/opt/homebrew/bin` to `PATH` for `ffmpeg`/`ffprobe`.
 
 **Done when**: source, range, deliverables, `ffmpeg`/`ffprobe` paths, and a verified `numpy`+`PIL` Python path are all confirmed.
 

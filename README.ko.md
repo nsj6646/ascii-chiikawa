@@ -2,42 +2,41 @@
 
 > [English](README.md) | **한국어**
 
-`ffmpeg` rawvideo 파이프, NumPy 벡터화 글리프 스플래팅, Pillow를 활용한 범용 **TrueColor 컬러 ASCII 영상/GIF 플레이어** 및 **글로우 HD ASCII GIF 변환기**입니다.
+유튜브 링크나 로컬 영상/GIF를 **터미널 TrueColor 컬러 ASCII 애니메이션**과 **글로우 HD ASCII GIF**로 바꿔주는 도구입니다. 스킬을 내려받고 에이전트에게 프롬프트 한 줄만 보내면 끝납니다.
 
-로컬 영상(`MP4`, `MOV`, `MKV`, `WEBM`)이나 애니메이션 `GIF`를 포맷 구분 없이 처리하며, 유튜브 링크에서 원하는 구간만 잘라 `ascii_player.py` 및 ASCII GIF로 자동 변환하는 Antigravity 에이전트 스킬(`.agents/skills/ascii-video-player/`)이 포함되어 있습니다.
+## Install
 
-## 사전 요구사항
+`SKILL.md`에 모든 사전 요구사항(`ffmpeg`, `yt-dlp`, `numpy`, `Pillow`) 확인 및 설치 가이드가 포함되어 있어, 에이전트가 환경 준비부터 변환까지 자동으로 처리합니다.
 
-- **FFmpeg (`ffmpeg`, `ffprobe`)** — 영상 디코딩 및 2-pass GIF 인코딩에 필수
-- **Python 3.9+** (`numpy`, `Pillow` 설치 필요)
-- **`yt-dlp`** — 선택 사항 (유튜브 URL에서 직접 다운로드할 때만 필요)
+### 1. 스킬 다운로드
 
 ```bash
-# macOS (Homebrew)
-brew install ffmpeg
-brew install yt-dlp   # 선택: 유튜브 링크 다운로드 시에만 필요
-
-# Python 패키지 (미설치 시)
-python3 -m pip install numpy pillow
+git clone https://github.com/nsj6646/ascii-chiikawa.git
+cd ascii-chiikawa
 ```
 
-## 빠른 시작
+*(또는 `.agents/skills/ascii-video-player/` 폴더만 본인 프로젝트의 `.agents/skills/`나 전역 스킬 폴더로 복사해서 사용할 수 있습니다.)*
 
-### 1. 터미널에서 영상/GIF 실시간 재생 (TrueColor ASCII)
+### 2. 에이전트에게 프롬프트 전송
+
+```text
+/ascii-video-player https://youtu.be/<VIDEO_ID> 3초부터 16초까지
+```
+
+의존성 확인, 영상 구간 다운로드, `ascii_player.py` 실행 및 원본·컬러 ASCII GIF 생성까지 자동으로 완료됩니다.
+
+---
+
+## 직접 CLI로 실행하기 (에이전트 없이)
+
+직접 실행하려면 `ffmpeg`(`ffprobe`)과 Python 3.9+(`numpy`, `Pillow`)가 필요합니다. (`yt-dlp`는 유튜브 URL을 받을 때만 필요)
 
 ```bash
-python3 ascii_player.py path/to/video.mp4
+# 터미널에서 영상/GIF 실시간 재생 (Ctrl+C로 종료)
 python3 ascii_player.py path/to/video.mp4 --start 3 --duration 13 --fps 15
 python3 ascii_player.py path/to/clip.gif --fps 12
-```
 
-`Ctrl+C`로 깔끔하게 종료할 수 있습니다.
-
-> **macOS 참고**: Homebrew의 `python3`가 `PATH` 우선순위에 있어 `No module named 'numpy'`가 발생한다면 `/usr/bin/python3 ascii_player.py ...`로 실행하세요.
-
-### 2. 글로우 HD 컬러 ASCII GIF + 프리뷰 PNG 내보내기
-
-```bash
+# 글로우 HD 컬러 ASCII GIF + 프리뷰 PNG 내보내기
 python3 ascii_player.py path/to/video.mp4 \
   --start 3 --duration 13 --fps 10 --width 600 \
   --title "my clip · ascii" \
@@ -45,15 +44,7 @@ python3 ascii_player.py path/to/video.mp4 \
   --preview out_preview.png
 ```
 
-### 3. (선택) 유튜브 링크에서 특정 구간만 다운로드
-
-```bash
-yt-dlp -f "bv*[height<=720][ext=mp4]/b[height<=720][ext=mp4]/best[height<=720]" \
-  --download-sections "*0:00-0:20" \
-  -o "clip.%(ext)s" "https://youtu.be/<VIDEO_ID>"
-
-python3 ascii_player.py clip.mp4 --start 3 --duration 13
-```
+> **macOS 참고**: Homebrew `python3`에 `numpy`/`Pillow`가 없다면 `/usr/bin/python3 ascii_player.py ...`로 실행하세요.
 
 ## CLI 옵션
 
@@ -85,14 +76,6 @@ python3 ascii_player.py clip.mp4 --start 3 --duration 13
 
 ## 프로젝트 구조
 
+- `.agents/skills/ascii-video-player/` — 재사용 가능한 에이전트 스킬 (`SKILL.md`, `RENDERING-SPEC.md`)
 - `ascii_player.py` — CLI 진입점 및 터미널 실시간 TrueColor ASCII 플레이어
 - `ascii_exporter.py` — 글리프 아틀라스 빌더, NumPy 5D 벡터 렌더러, 2-pass GIF 변환기
-- `.agents/skills/ascii-video-player/` — 재사용 가능한 에이전트 스킬 (`SKILL.md`, `RENDERING-SPEC.md`)
-
-## 에이전트 스킬 사용법
-
-이 저장소를 클론한 뒤 Antigravity에서 워크스페이스 스킬을 호출할 수 있습니다.
-
-```text
-/ascii-video-player <유튜브_URL_또는_로컬_영상> 3초부터 16초까지
-```

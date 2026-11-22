@@ -2,42 +2,41 @@
 
 > **English** | [한국어](README.ko.md)
 
-A universal **TrueColor ASCII video/GIF player** and **glowing HD ASCII GIF exporter** powered by `ffmpeg` rawvideo pipes, NumPy vectorized glyph splatting, and Pillow.
+Turn any YouTube clip or local video/GIF into a **TrueColor terminal ASCII animation** and a **glowing HD colored ASCII GIF**—just install the skill and send a prompt to your agent.
 
-Works with any local video (`MP4`, `MOV`, `MKV`, `WEBM`) or animated `GIF`, plus an included Antigravity agent skill (`.agents/skills/ascii-video-player/`) to automate downloading a YouTube time range and converting it end-to-end.
+## Install
 
-## Prerequisites
+`SKILL.md` guides your agent to check and install all prerequisites (`ffmpeg`, `yt-dlp`, `numpy`, `Pillow`) automatically.
 
-- **FFmpeg (`ffmpeg`, `ffprobe`)** — required for video decoding and 2-pass GIF encoding
-- **Python 3.9+** with `numpy` and `Pillow`
-- **`yt-dlp`** — optional, only needed when downloading clips from YouTube URLs
+### 1. Get the skill
 
 ```bash
-# macOS (Homebrew)
-brew install ffmpeg
-brew install yt-dlp   # optional: only for YouTube URLs
-
-# Python dependencies (if not already installed)
-python3 -m pip install numpy pillow
+git clone https://github.com/nsj6646/ascii-chiikawa.git
+cd ascii-chiikawa
 ```
 
-## Quick Start
+*(Or copy `.agents/skills/ascii-video-player/` into your own project's `.agents/skills/` or global skills directory.)*
 
-### 1. Play any video or GIF in the terminal (TrueColor ASCII)
+### 2. Prompt your agent
+
+```text
+/ascii-video-player https://youtu.be/<VIDEO_ID> from 3s to 16s
+```
+
+That's it—the agent handles dependency checks, clip download, `ascii_player.py` setup, and original + colored ASCII GIF export.
+
+---
+
+## Manual CLI Usage (without an agent)
+
+If you want to run `ascii_player.py` directly, make sure `ffmpeg` (`ffprobe`) and Python 3.9+ (`numpy`, `Pillow`) are installed (`yt-dlp` is only needed for YouTube URLs):
 
 ```bash
-python3 ascii_player.py path/to/video.mp4
+# Play any video or GIF in the terminal (Ctrl+C to exit)
 python3 ascii_player.py path/to/video.mp4 --start 3 --duration 13 --fps 15
 python3 ascii_player.py path/to/clip.gif --fps 12
-```
 
-Press `Ctrl+C` to exit cleanly.
-
-> **macOS note**: If Homebrew's `python3` is first in your `PATH` and lacks `numpy`/`Pillow`, run with `/usr/bin/python3 ascii_player.py ...`.
-
-### 2. Export a glowing HD colored ASCII GIF + preview PNG
-
-```bash
+# Export a glowing HD colored ASCII GIF + preview PNG
 python3 ascii_player.py path/to/video.mp4 \
   --start 3 --duration 13 --fps 10 --width 600 \
   --title "my clip · ascii" \
@@ -45,15 +44,7 @@ python3 ascii_player.py path/to/video.mp4 \
   --preview out_preview.png
 ```
 
-### 3. (Optional) Download a YouTube clip range first
-
-```bash
-yt-dlp -f "bv*[height<=720][ext=mp4]/b[height<=720][ext=mp4]/best[height<=720]" \
-  --download-sections "*0:00-0:20" \
-  -o "clip.%(ext)s" "https://youtu.be/<VIDEO_ID>"
-
-python3 ascii_player.py clip.mp4 --start 3 --duration 13
-```
+> **macOS note**: If Homebrew's `python3` lacks `numpy`/`Pillow`, run `/usr/bin/python3 ascii_player.py ...`.
 
 ## CLI Options
 
@@ -85,14 +76,6 @@ Any Video / GIF (MP4, MOV, WEBM, GIF)
 
 ## Project Layout
 
+- `.agents/skills/ascii-video-player/` — Reusable agent skill (`SKILL.md`, `RENDERING-SPEC.md`)
 - `ascii_player.py` — CLI entry point and live TrueColor terminal player
 - `ascii_exporter.py` — Glyph atlas builder, vectorized 5D renderer, and 2-pass GIF exporter
-- `.agents/skills/ascii-video-player/` — Reusable agent skill (`SKILL.md` + `RENDERING-SPEC.md`)
-
-## Agent Skill Usage
-
-Clone this repository and invoke the workspace skill in Antigravity:
-
-```text
-/ascii-video-player <YOUTUBE_URL_OR_LOCAL_VIDEO> from 3s to 16s
-```
