@@ -1,5 +1,7 @@
 # ascii-chiikawa
 
+> **English** | [한국어](README.ko.md)
+
 A universal **TrueColor ASCII video/GIF player** and **glowing HD ASCII GIF exporter** powered by `ffmpeg` rawvideo pipes, NumPy vectorized glyph splatting, and Pillow.
 
 Works with any local video (`MP4`, `MOV`, `MKV`, `WEBM`) or animated `GIF`, plus an included Antigravity agent skill (`.agents/skills/ascii-video-player/`) to automate downloading a YouTube time range and converting it end-to-end.
